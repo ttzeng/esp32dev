@@ -4,9 +4,9 @@
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 
-void app_main(void)
+void task_blinky(void *pvParameter)
 {
-    printf("Hello world!\n");
+    printf("Hello from the Blinky task!\n");
 
     gpio_reset_pin(CONFIG_GPIO_LED);
     gpio_set_direction(CONFIG_GPIO_LED, GPIO_MODE_OUTPUT);
@@ -18,4 +18,9 @@ void app_main(void)
 
         vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
     }
+}
+
+void app_main(void)
+{
+    xTaskCreate(task_blinky, "task_blinky", 4096, NULL, 5, NULL);
 }
