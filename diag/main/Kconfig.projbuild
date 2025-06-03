@@ -1,0 +1,11 @@
+menu "Command Line Example Configuration"
+
+    orsource "$IDF_PATH/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+
+    config UART_QUEUE_SIZE
+        int "UART event queue size"
+        default 10
+        help
+            The size of the UART event queue to handle events from the UART driver.
+
+endmenu
