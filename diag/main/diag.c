@@ -6,11 +6,15 @@
 #include "FreeRTOS_CLI.h"
 #include "driver/uart.h"
 #include "hal/efuse_hal.h"
+#include "nvs_flash.h"
+#include "esp_wifi.h"
 #include "sdkconfig.h"
+
+extern void AddScanCommand(void);
 
 #define RX_BUF_SIZE        512
 #define MAX_INPUT_LENGTH   40
-#define MAX_OUTPUT_LENGTH  80
+#define MAX_OUTPUT_LENGTH  1024
 #define PROMPT_STRING      "diag> "
 
 enum {
@@ -30,7 +34,7 @@ static portBASE_TYPE xVersion(char* pcOutBuf, size_t xOutBufLen, const char* pcC
 
 static const CLI_Command_Definition_t xVersionCommand = {
     "version",
-    "version: Show chip version information.\n",
+    "version: Show chip version information.\r\n",
     xVersion,
     0
 };
@@ -54,9 +58,30 @@ void task_diagnostic(void *pvParameter)
     ESP_ERROR_CHECK(uart_set_pin(UART_NUM_0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, RX_BUF_SIZE, 0, CONFIG_UART_QUEUE_SIZE, &uart0_queue, 0));
 
+    // Initialize NVS
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
+
+    // Initialize Wi-Fi
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
+    assert(sta_netif);
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
     printf("Hello from the Diagnostic task!\n");
 
     FreeRTOS_CLIRegisterCommand(&xVersionCommand);
+
+    AddScanCommand();
 
     while (1) {
         // Wait for UART events
