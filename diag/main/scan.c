@@ -6,6 +6,9 @@
 
 static portBASE_TYPE xScan(char* pcOutBuf, size_t xOutBufLen, const char* pcCmdStr)
 {
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
     sprintf(pcOutBuf, "Scanning for Wi-Fi networks...\r\n");
 
     // Scan all available APs
@@ -24,12 +27,14 @@ static portBASE_TYPE xScan(char* pcOutBuf, size_t xOutBufLen, const char* pcCmdS
         sprintf(pcOutBuf + strlen(pcOutBuf), "SSID: %s, RSSI: %d dBm\r\n", ap_record.ssid, ap_record.rssi);
     }
 
+    ESP_ERROR_CHECK(esp_wifi_stop());
+
     return pdFALSE;
 }
 
 static const CLI_Command_Definition_t xScanCommand = {
     "scan",
-    "scan: Scan for available Wi-Fi networks.\r\n",
+    "scan:\r\n\tScan for available Wi-Fi networks.\r\n",
     xScan,
     0
 };

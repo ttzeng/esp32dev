@@ -11,6 +11,7 @@
 #include "sdkconfig.h"
 
 extern void AddScanCommand(void);
+extern void AddConnectCommand(void);
 
 #define RX_BUF_SIZE        512
 #define MAX_INPUT_LENGTH   40
@@ -34,7 +35,7 @@ static portBASE_TYPE xVersion(char* pcOutBuf, size_t xOutBufLen, const char* pcC
 
 static const CLI_Command_Definition_t xVersionCommand = {
     "version",
-    "version: Show chip version information.\r\n",
+    "version:\r\n\tShow chip version information.\r\n",
     xVersion,
     0
 };
@@ -74,14 +75,13 @@ void task_diagnostic(void *pvParameter)
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_start());
 
     printf("Hello from the Diagnostic task!\n");
 
     FreeRTOS_CLIRegisterCommand(&xVersionCommand);
 
     AddScanCommand();
+    AddConnectCommand();
 
     while (1) {
         // Wait for UART events
