@@ -154,6 +154,7 @@ $ idf.py -p <PORT> monitor
 
 * [Getting Started Guide][13]
 * [API Reference][15]
+* [Arduino as an ESP-IDF component][21]
 * [Tutorials - Blinky with ESP-IDF in VS Code on ESP32-C3][11]
 * [Blinky on the ESP32-C3 SuperMini board using Arduino IDE][17]
 * [Configure and debug a ESP32-C3 code using Eclipse / command line][12]
@@ -179,3 +180,4 @@ $ idf.py -p <PORT> monitor
 [18]: https://michiel.vanderwulp.be/domotica/Modules/ESP32-C3-SuperMini/schema-C3.jpg "ESP32-C3 Super Mini Schematics"
 [19]: https://michiel.vanderwulp.be/domotica/Modules/ESP32-C3-SuperMini/conns.jpg "ESP32-C3 Super Mini Connections"
 [20]: https://michiel.vanderwulp.be/domotica/Modules/ESP32-C3-SuperMini/esp32-c3_datasheet_en.pdf "ESP32-C3 Super Mini Datasheet"
+[21]: https://docs.espressif.com/projects/arduino-esp32/en/latest/esp-idf_component.html "Arduino as an ESP-IDF component"
