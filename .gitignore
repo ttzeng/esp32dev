@@ -1,4 +1,6 @@
-# Build artifact folders
+# Build artifacts
+dependencies.lock
+managed_components/
 build/
 
 # Configuration files
