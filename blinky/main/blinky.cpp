@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
 #include "driver/uart.h"
 #include "sdkconfig.h"
+#include "led-supermini.hpp"
 
 #define RX_BUF_SIZE 1024
 
@@ -12,13 +12,12 @@ void task_blinky(void *pvParameter)
 {
     printf("Hello from the Blinky task!\n");
 
-    gpio_reset_pin(CONFIG_GPIO_LED);
-    gpio_set_direction(CONFIG_GPIO_LED, GPIO_MODE_OUTPUT);
+    Led *led = new Led_Esp32c3_SuperMini((gpio_num_t)CONFIG_GPIO_LED);
 
     int state = 0;
     while (1) {
         char str[10];
-        gpio_set_level(CONFIG_GPIO_LED, state ^= 1);
+        *led = state ^= 1;
         snprintf(str, sizeof(str), "LED %s\r\n", state ? "Off" : "On");
         printf("%s", str);
 
@@ -28,7 +27,7 @@ void task_blinky(void *pvParameter)
     }
 }
 
-void app_main(void)
+extern "C" void app_main(void)
 {
     // Initialize the UART for output
     uart_config_t uart_config = {
