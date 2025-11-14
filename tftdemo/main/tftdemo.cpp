@@ -217,7 +217,7 @@ static void task_demo(void *pvParameter)
 {
     printf("Hello from the TFT demo task!\n");
 
-    tft *tft = new tft_st7735_supermini(SPI2_HOST, PIN_CS, PIN_SCK, PIN_MOSI, PIN_DC, PIN_RESET, mdelay);
+    tft *tft = new tft_st7735_supermini(SPI2_HOST, PIN_CS, PIN_SCK, PIN_MOSI, PIN_DC, PIN_RESET);
     while (1) {
         demo_text(tft);
         demo_fillScreen(tft);
